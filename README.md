@@ -1,6 +1,8 @@
 # covid-italy
 Some templates to setup a covid-19 data analysis and visualization environment using Grafana (based on the data provided by Protezione Civile: https://github.com/pcm-dpc/COVID-19)
 
+![Example screenshot](screen.png)
+
 ## Environment requirements
 
  - MySQL Server: https://www.mysql.com/
