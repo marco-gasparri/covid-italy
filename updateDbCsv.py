@@ -46,7 +46,7 @@ def nullifyEmptyValues(row):
 
 def main():
     #pull repo
-    if not os.path.isfile(repoPath) or (call(["cd", repoPath, "git", "branch"], stderr=STDOUT, stdout=open(os.devnull, 'w')) != 0):
+    if not os.path.isdir(repoPath) or (call(["cd", repoPath, "git", "branch"], stderr=STDOUT, stdout=open(os.devnull, 'w')) != 0):
         print("Cloning repository...")
         git.Git(repoPath).clone("https://github.com/pcm-dpc/COVID-19")
     else:
