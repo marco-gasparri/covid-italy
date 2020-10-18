@@ -11,8 +11,8 @@ Some templates to setup a covid-19 data analysis and visualization environment u
  - Git: https://git-scm.com/
  - Python3: https://www.python.org/
  - Python libraries:
- - mysql-connector: `python3 -m pip install mysql-connector`
- - GitPython: `python3 -m pip install GitPython`
+     - `mysql-connector`: `python3 -m pip install mysql-connector`
+     - `GitPython`: `python3 -m pip install GitPython`
 
 ## Setup
 - Install MySQL Server and Grafana
