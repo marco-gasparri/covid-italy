@@ -28,5 +28,5 @@ Some templates to setup a covid-19 data analysis and visualization environment u
 
 Now you are able to visualize the already developed graphs and you are provided with the data and the infrastructure to perform your own analysis.
 
-Snapshot: https://snapshot.raintank.io/dashboard/snapshot/ywzWUDEsxV3CLBqmaUJ7dgNW2q1Is74K
+Demo of my dashboard: https://www.covid-italy.marcogasparri.com/
 	
