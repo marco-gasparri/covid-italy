@@ -1,5 +1,5 @@
 # covid-italy
-Some templates to setup a covid-19 data analysis and visualization environment using Grafana (based on the data provided by Protezione Civile: https://github.com/pcm-dpc/COVID-19)
+Some templates to setup a covid-19 data analysis and visualization environment using Grafana (based on the data provided by Protezione Civile https://github.com/pcm-dpc/COVID-19, and https://github.com/italia/covid19-opendata-vaccini for vaccines)
 
 ![Example screenshot](screen.png)
 
@@ -22,8 +22,9 @@ Some templates to setup a covid-19 data analysis and visualization environment u
     - `dbUser`: database user
     - `dbPass`: database password
     - `dbName`: database name
-    - `repoPath`: path where the data repository (by Protezione Civile) will be cloned (or pull, if already existing)
-- Run the `updateDbCsv.py` script to fetch the data and populate db (this script should be run once a day to update the db with the latest data provided by Protezione Civile)
+    - `repoPath`: path where the data repository about the pandemic will be cloned (or pull, if already existing)
+    - `repoVaccPath`: path where the data repository about vaccines will be cloned (or pull, if already existing)
+- Run the `updateDbCsv.py` script to fetch the data and populate db (this script should be run at least once a day to update the db with the latest data provided)
 - Import `covid19ItalyGrafanaTemplate.json` into Grafana (configuring Grafana to use the created db as data source)
 
 Now you are able to visualize the already developed graphs and you are provided with the data and the infrastructure to perform your own analysis.

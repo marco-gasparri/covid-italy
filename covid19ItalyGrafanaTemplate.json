@@ -1,4 +1,64 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_MYSQL",
+      "label": "MySQL",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mysql",
+      "pluginName": "MySQL"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.2.1"
+    },
+    {
+      "type": "panel",
+      "id": "grafana-worldmap-panel",
+      "name": "Worldmap Panel",
+      "version": "0.3.2"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "mysql",
+      "name": "MySQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": "7.1.0"
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -16,8 +76,8 @@
   "editable": true,
   "gnetId": 11884,
   "graphTooltip": 1,
-  "id": 1,
-  "iteration": 1603193492259,
+  "id": null,
+  "iteration": 1612285007736,
   "links": [
     {
       "icon": "external link",
@@ -32,32 +92,66 @@
   ],
   "panels": [
     {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "collapsed": false,
+      "datasource": "${DS_MYSQL}",
       "gridPos": {
-        "h": 10,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 35,
-      "options": {
-        "content": "# Guida alla consultazione\n\n#### Grafici regionali/nazionali\nLa prima sezione di grafici contiene i grafici regionali. I dati di questi grafici fanno riferimento a province e regioni: selezionando una regione dal menu in alto, questi grafici si aggiorneranno mostrando i dati relativi alla regione selezionata.  \nIl secondo gruppo, invece, presenta grafici con i dati nazionali, non divisi per regioni.\n\n#### Grafici totali/giornalieri\nI grafici in generale si dividono in \"totali\" e \"giornalieri\". Nei grafici \"totali\", per ogni giorno vengono riportati valori aggregati dati dalla somma di tutti i valori giornalieri da inizio epidemia; nei grafici \"giornalieri\", vengono invece riportati i dati raccolti in ogni singolo giorno.  \nPerciò, ad esempio, se in un grafico \"giornaliero\" i primi 3 valori fossero 3, 7 e 18 (il che significa un valore 3 relativo al primo giorno, un valore 7 relativo al secondo giorno e un valore 18 relativo al terzo giorno), un equivalente grafico \"totale\", che volesse esprimere lo stesso dato, dovrebbe riportare il valore 3 nel primo giorno (non essendoci valori precedenti), un valore 10 nel secondo giorno (che è la somma dei valori dei primi due giorni) e un valore 28 nel terzo giorno (che è la somma dei valori dei primi 3 giorni).\n\n#### Consultazione di un grafico \nOgni grafico è corredato di un titolo e una descrizione (visualizzabile passando il puntatore del mouse sulla \"i\" che si vede nell'angolo in alto a sinistra di ogni grafico).  \nSpostando il puntatore del mouse lungo il grafico, si possono visualizzare i valori precisi riportati nel grafico stesso.  \nCliccando su un punto di un grafico e trascinando il mouse, si può fare lo zoom dell'area di grafico di proprio interesse (un particolare periodo, ad esempio): per tornare alla visualizzazione classica si può ricarica la pagina https://covid-italy.marcogasparri.com. Inoltre, in alto a destra, è presente un tool per cambiare l'intervallo temporale preso in esame da tutti i grafici della pagina.",
-        "mode": "markdown"
+      "id": 63,
+      "panels": [],
+      "title": "Ultimo aggiornamento",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
       },
-      "pluginVersion": "7.1.0",
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.2.1",
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "metricColumn": "none",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n",
+          "rawQuery": true,
+          "rawSql": "SELECT DATE_FORMAT(MAX(data), \"%d-%m-%Y\") as \"last_data\" FROM nazionale",
           "refId": "A",
           "select": [
             [
@@ -81,29 +175,1312 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Guida alla consultazione",
-      "type": "text"
+      "title": "Ultimo aggiornamento dati",
+      "type": "stat"
     },
     {
-      "collapsed": false,
-      "datasource": null,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il valore riportato indica, utilizzando i dati disponibili (quindi senza considerare ipotetici trend futuri), l'ultimo tempo di raddoppio (in giorni, a partire da oggi) in cui il numero degli \"attualmente positivi\" è raddoppiato.\nPerciò, per esempio, se fosse riportato un valore di 5, significherebbe che negli ultimi 5 giorni il numero degli \"attualmente positivi\" è raddoppiato.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 1,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 3
       },
-      "id": 33,
-      "panels": [],
-      "title": "Dati regionali (SELEZIONARE REGIONE IN ALTO)",
-      "type": "row"
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT CURDATE() as \"time\", tempo_raddoppio as \"Ultimo tempo di raddoppio registrato dei contagi (giorni)\" FROM statistiche",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultimo tempo di raddoppio dei contagi registrato (giorni)",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento decessi giornalieri (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 5
+      },
+      "id": 61,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nCURDATE() as \"time\",\ntoday.deceduti-yesterday.deceduti as \"Decessi (OGGI)\",\nyesterday.deceduti-before_yesterday.deceduti as \"Decessi (IERI)\",\n(today.deceduti-yesterday.deceduti)-(yesterday.deceduti-before_yesterday.deceduti) as \"Incremento decessi giornalieri (OGGI)\"\nFROM nazionale today, nazionale yesterday, nazionale before_yesterday\nWHERE SUBDATE(today.data, 1) = yesterday.data AND today.data = (SELECT MAX(data) from nazionale) AND before_yesterday.data = SUBDATE(yesterday.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultima variazione dei decessi",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(252, 252, 252)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento nuovi positivi giornalieri (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 5
+      },
+      "id": 57,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nCURDATE() as \"time\",\ntoday.nuovi_positivi as \"Nuovi positivi (OGGI)\",\nyesterday.nuovi_positivi as \"Nuovi positivi (IERI)\", \ntoday.nuovi_positivi-yesterday.nuovi_positivi as \"Incremento nuovi positivi giornalieri (OGGI)\"\nFROM nazionale today, nazionale yesterday\nWHERE SUBDATE(today.data, 1) = yesterday.data AND today.data = (SELECT MAX(data) from nazionale)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultima variazione del conteggio dei positivi",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Guariti (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgb(255, 255, 255)",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Guariti (IERI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgb(255, 255, 255)",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento guariti giornalieri (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 0
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 5
+      },
+      "id": 91,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nCURDATE() as \"time\",\ntoday.dimessi_guariti-yesterday.dimessi_guariti as \"Guariti (OGGI)\",\nyesterday.dimessi_guariti-before_yesterday.dimessi_guariti as \"Guariti (IERI)\",\n(today.dimessi_guariti-yesterday.dimessi_guariti)-(yesterday.dimessi_guariti-before_yesterday.dimessi_guariti) as \"Incremento guariti giornalieri (OGGI)\"\nFROM nazionale today, nazionale yesterday, nazionale before_yesterday\nWHERE SUBDATE(today.data, 1) = yesterday.data AND today.data = (SELECT MAX(data) from nazionale) AND before_yesterday.data = SUBDATE(yesterday.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultima variazione del conteggio dei guariti",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(245, 245, 245)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento posti occupati (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento ingressi in terapia intensiva (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "id": 55,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nCURDATE() as \"time\",\ntoday.terapia_intensiva as \"Totale ricoverati in terapia intensiva (OGGI)\",\nyesterday.terapia_intensiva as \"Totale ricoverati in terapia intensiva (IERI)\", \ntoday.terapia_intensiva-yesterday.terapia_intensiva as \"Incremento posti occupati (OGGI)\",\ntoday.ingressi_terapia_intensiva as \"Nuovi ingressi in terapia intensiva (OGGI)\",\nyesterday.ingressi_terapia_intensiva as \"Nuovi ingressi in terapia intensiva (IERI)\",\ntoday.ingressi_terapia_intensiva-yesterday.ingressi_terapia_intensiva as \"Incremento ingressi in terapia intensiva (OGGI)\"\nFROM nazionale today, nazionale yesterday\nWHERE SUBDATE(today.data, 1) = yesterday.data AND today.data = (SELECT MAX(data) from nazionale)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultima variazione dei ricoveri in terapia intensiva",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rapporto (%) positivi/tamponi (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rapporto (%) positivi/tamponi (IERI)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento tamponi (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 0
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 9
+      },
+      "id": 59,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nCURDATE() as \"time\",\ntoday.nuovi_positivi/(today.tamponi-yesterday.tamponi) * 100 as \"Rapporto (%) positivi/tamponi (OGGI)\",\ntoday.tamponi-yesterday.tamponi as \"Tamponi (OGGI)\",\nyesterday.nuovi_positivi/(yesterday.tamponi-before_yesterday.tamponi) * 100 as \"Rapporto (%) positivi/tamponi (IERI)\",\nyesterday.tamponi-before_yesterday.tamponi as \"Tamponi (IERI)\",\n(today.tamponi-yesterday.tamponi)-(yesterday.tamponi-before_yesterday.tamponi) as \"Incremento tamponi (OGGI)\"\nFROM nazionale today, nazionale yesterday, nazionale before_yesterday\nWHERE SUBDATE(today.data, 1) = yesterday.data AND today.data = (SELECT MAX(data) from nazionale) AND before_yesterday.data = SUBDATE(yesterday.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultima variazione del numero di tamponi effettuati e rapporto positivi/tamponi ",
+      "type": "stat"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "MySQL",
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra per ogni regione i casi totali di contagio registrati dall'inizio dell'epidemia",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "denominazione_regione",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  denominazione_regione AS metric,\n  sum(totale_casi)\nFROM covid19.province\ngroup by denominazione_regione, data\nORDER BY data, denominazione_regione",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "covid19.province",
+          "timeColumn": "data",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Totale infetti per regione (da inizio epidemia)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:267",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:268",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Nel grafico sono mostrati gli indici Rt regionali pubblicati dall'Istituto Superiore di Sanità.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "decimals": 2,
+          "mappings": [],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 1.25
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 109,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  now() AS \"time\",\n  rt_iss as \"Indice Rt\",\n  regione\nFROM dati_statici\nORDER BY regione asc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ultimo report ISS per indici Rt (dati pubblicati il 29/01/2021)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Dosi di vaccino somministrate e consegnate a livello nazionale",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dosi somministrate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dosi consegnate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Percentuale dosi somministrate/consegnate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "semi-dark-orange",
+                      "value": 30
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 50
+                    },
+                    {
+                      "color": "green",
+                      "value": 70
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Persone immunizzate (2 dosi ricevute)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "semi-dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 97,
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "first"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(dosi_somministrate) as \"Dosi somministrate\",\n  SUM(dosi_consegnate) as \"Dosi consegnate\",\n  (SUM(dosi_somministrate)/SUM(dosi_consegnate))*100 as \"Percentuale dosi somministrate/consegnate\"\nFROM \nsomministrazioni_summary\nWHERE\nultimo_aggiornamento = (SELECT max(ultimo_aggiornamento) from somministrazioni_summary)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(seconda_dose) as \"Persone immunizzate (2 dosi ricevute)\"\nfrom\n  somministrazioni_fasce\n  ",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Vaccini somministrati",
+      "type": "gauge"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_MYSQL}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 33,
+      "panels": [],
+      "title": "Grafici regionali (SELEZIONARE REGIONE IN ALTO)",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Dosi di vaccino somministrate e consegnate a livello regionale",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dosi somministrate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dosi consegnate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Percentuale dosi somministrate/consegnate"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 30
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 50
+                    },
+                    {
+                      "color": "green",
+                      "value": 70
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Persone immunizzate (2 dosi ricevute)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "semi-dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 38
+      },
+      "id": 99,
+      "options": {
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(dosi_somministrate) as \"Dosi somministrate\",\n  SUM(dosi_consegnate) as \"Dosi consegnate\",\n  (SUM(dosi_somministrate)/SUM(dosi_consegnate))*100 as \"Percentuale dosi somministrate/consegnate\"\nFROM \nsomministrazioni_summary, dati_statici\nWHERE\nultimo_aggiornamento = (SELECT max(ultimo_aggiornamento) from somministrazioni_summary) AND somministrazioni_summary.area = dati_statici.area AND dati_statici.regione = '$Regione'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select\nsum(seconda_dose) as \"Persone immunizzate (2 dosi ricevute)\"\nfrom \nsomministrazioni_fasce, dati_statici\nwhere \nsomministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione'",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Vaccini somministrati per regione (SELEZIONA REGIONE)",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
       "description": "Per ogni regione e per ogni provincia, è riportato il numero totale di casi tracciati dall'inizio dell'epidemia",
       "fieldConfig": {
         "defaults": {
@@ -118,7 +1495,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 45
       },
       "hiddenSeries": false,
       "id": 6,
@@ -152,7 +1529,7 @@
           "group": [],
           "metricColumn": "denominazione_regione",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  denominazione_provincia AS metric,\n  sum(totale_casi)\nFROM covid19.province\nwhere denominazione_regione='$Regione'\ngroup by denominazione_provincia, data\nORDER BY data, denominazione_provincia",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  denominazione_provincia AS metric,\n  sum(totale_casi)\nFROM covid19.province\nwhere denominazione_regione='$Regione'\ngroup by denominazione_provincia, data\nORDER BY data, denominazione_provincia",
           "refId": "A",
           "select": [
             [
@@ -219,8 +1596,127 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${DS_MYSQL}",
       "description": "Per ogni regione, è riportato il numero  di casi in isolamento domiciliare, ricoverati con sintomi e in terapia intensiva (report giornaliero)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 4,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "hiddenSeries": false,
+      "id": 21,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  isolamento_domiciliare AS \"Isolamento domicialiare\",\n  ricoverati_con_sintomi AS \"Ricoverati con sintomi\",\n  terapia_intensiva AS \"Terapia intensiva\"\nFROM regioni\nWHERE denominazione_regione='$Regione'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Situazione giornaliera positivi per regione - SELEZIONARE REGIONE",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:270",
+          "decimals": null,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:271",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Per ogni giorno, per ogni regione, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata).\nResta uno degli indicatori più importanti dell'andamento dell'epidemia, nonostante da solo non possa indicare se ci sia una saturazione del numero dei tamponi, ovvero se il numero di tamponi effettuati sia sufficiente a tracciare tutti o la maggior parte dei casi di contagio.\nUn numero insifficiente significherebbe una rilevante quota sommersa di casi positivi non tracciati.",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -232,11 +1728,11 @@
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 11
+        "x": 0,
+        "y": 54
       },
       "hiddenSeries": false,
-      "id": 21,
+      "id": 41,
       "legend": {
         "avg": false,
         "current": false,
@@ -267,7 +1763,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  isolamento_domiciliare AS \"Isolamento domicialiare\",\n  ricoverati_con_sintomi AS \"Ricoverati con sintomi\",\n  terapia_intensiva AS \"Terapia intensiva\"\nFROM regioni\nWHERE denominazione_regione='$Regione'",
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.nuovi_positivi/(c2.tamponi-c1.tamponi) * 100 as \"Rapporto positivi/tamponi\"\nFROM covid19.regioni c1, covid19.regioni c2\nWHERE c1.data = SUBDATE(c2.data, 1) AND c2.denominazione_regione='$Regione' AND c1.denominazione_regione='$Regione'\n",
           "refId": "A",
           "select": [
             [
@@ -293,7 +1789,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Situazioni positivi per regione (SELEZIONARE REGIONE)",
+      "title": "Rapporto giornaliero positivi/tamponi per regione - SELEZIONARE REGIONE",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -309,17 +1805,17 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:270",
-          "decimals": null,
-          "format": "short",
+          "$$hashKey": "object:129",
+          "decimals": 1,
+          "format": "percent",
           "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "100",
+          "min": "0",
           "show": true
         },
         {
-          "$$hashKey": "object:271",
+          "$$hashKey": "object:130",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -334,73 +1830,303 @@
       }
     },
     {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 20
+      "aliasColors": {
+        "Percentuale test molecolari positivi": "light-orange",
+        "Percentuale test rapidi positivi": "light-green",
+        "Test molecolari": "dark-orange",
+        "Test rapidi": "dark-green"
       },
-      "id": 31,
-      "panels": [],
-      "repeat": null,
-      "title": "Dati nazionali",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "description": "Per ogni giorno, è riportato nel grafico il numero di tamponi eseguiti a livello nazionale",
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione e per ogni giorno, il totale dei test molecolari e rapidi effettuati, con percentuale dei positivi",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "custom": {}
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 10,
+      "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 0,
-        "y": 21
+        "x": 12,
+        "y": 54
       },
       "hiddenSeries": false,
-      "id": 15,
+      "id": 111,
       "legend": {
-        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:328",
+          "alias": "Percentuale test molecolari positivi",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:329",
+          "alias": "Percentuale test rapidi positivi",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(r2.data, interval 6 hour) AS \"time\",\n  (r2.tamponi_test_antigenico_rapido - r1.tamponi_test_antigenico_rapido)  AS \"Test rapidi\",\n  (r2.tamponi_test_molecolare - r1.tamponi_test_molecolare) AS \"Test molecolari\",\n  ((r2.totale_positivi_test_antigenico_rapido-r1.totale_positivi_test_antigenico_rapido)/(r2.tamponi_test_antigenico_rapido - r1.tamponi_test_antigenico_rapido))*100 AS \"Percentuale test rapidi positivi\",\n  ((r2.totale_positivi_test_molecolare-r1.totale_positivi_test_molecolare)/(r2.tamponi_test_molecolare - r1.tamponi_test_molecolare))*100 AS \"Percentuale test molecolari positivi\"\nFROM covid19.regioni r1, covid19.regioni r2\nwhere r2.denominazione_regione='$Regione' AND r1.denominazione_regione='$Regione' AND r1.data = SUBDATE(r2.data, 1)\nORDER BY r2.data",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Test e positivi regionali  giornalieri per tamponi rapidi e molecolari - SELEZIONA REGIONE",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:287",
+          "decimals": null,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": "40000",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:288",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Decessi giornalieri": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, per ogni regione, il numero di decessi registrati legati all'epidemia",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "hiddenSeries": false,
+      "id": 71,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
         "show": true,
         "total": false,
         "values": false
       },
       "lines": true,
       "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.deceduti-c1.deceduti as \"Decessi giornalieri\"\nFROM covid19.regioni c1, covid19.regioni c2\nWHERE c1.data = SUBDATE(c2.data, 1)\nAND c1.denominazione_regione = '$Regione' and c2.denominazione_regione = '$Regione'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Decessi giornalieri per regione - SELEZIONARE REGIONE",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:156",
+          "decimals": null,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:157",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Posti totali attualmente disponibili": "dark-red",
+        "Posti totali con aggiunte già programmate": "dark-red",
+        "Ricoverati in terapia intensiva": "blue",
+        "Soglia di emergenza del 30% dei posti occupati": "yellow"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Nel grafico sono riportati, per ogni giorno, per orgni regione, i ricoverati in terapia intensiva.\nSono poi evidenziate due soglie: i posti di terapia intensiva attualmente disponibili e una soglia del 30% dei posti disponibili rappresentante una situazione di emergenza; tali dati si riferiscono alla situazione aggiornata alla data nel titolo del grafico, perciò confronti con la situazione primavarile non hanno senso.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "hiddenSeries": false,
+      "id": 43,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -410,17 +2136,23 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1082",
+          "alias": "Ricoverati in terapia intensiva",
+          "fill": 2
+        }
+      ],
       "spaceLength": 10,
-      "stack": true,
-      "steppedLine": true,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(c2.data, interval 18 hour) AS \"time\",\n  (c2.tamponi-c1.tamponi) AS \"Tamponi giornalieri\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  terapia_intensiva as \"Ricoverati in terapia intensiva\",\n  posti_attuali as \"Posti totali attualmente disponibili\",\n  (posti_attuali/100)*30 as \"Soglia di emergenza del 30% dei posti occupati\"\nFROM regioni, dati_statici\nWHERE denominazione_regione = '$Regione' AND regioni.denominazione_regione = dati_statici.regione",
           "refId": "A",
           "select": [
             [
@@ -446,7 +2178,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Tamponi giornalieri",
+      "title": "Situazione terapie intensive per regione (conteggio posti aggiornato al 07/01/2021) - SELEZIONARE REGIONE",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -462,8 +2194,8 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1426",
-          "format": "short",
+          "$$hashKey": "object:779",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -471,8 +2203,8 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1427",
-          "format": "short",
+          "$$hashKey": "object:780",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -486,12 +2218,701 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Dosi di vaccino somministrate": "semi-dark-blue",
+        "Persone immunizzate (2 dosi ricevute)": "semi-dark-blue",
+        "Positivi giornalieri": "semi-dark-yellow"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "description": "Per ogni giorno, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata).\nResta uno degli indicatori più importanti dell'andamento dell'epidemia, nonostante da solo non possa indicare se ci sia una saturazione del numero dei tamponi, ovvero se il numero di tamponi effettuati sia sufficiente a tracciare tutti o la maggior parte dei casi di contagio.\nUn numero insifficiente significherebbe una rilevante quota sommersa di casi positivi non tracciati.",
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, per ogni regione, il numero di positivi registrati.\nInoltre sono mostrate le persone che ricevono la seconda dose di vaccino, diventando quindi immunizzate (totali).",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 72
+      },
+      "hiddenSeries": false,
+      "id": 73,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Dosi di vaccino somministrate",
+          "yaxis": 2
+        },
+        {
+          "alias": "Persone immunizzate (2 dosi ricevute)",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  nuovi_positivi as \"Positivi giornalieri\"\nFROM covid19.regioni\nWHERE denominazione_regione = '$Regione'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  immunizzati as \"Persone immunizzate (2 dosi ricevute)\"\nFROM immunizzazioni",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Positivi giornalieri e persone immunizzate totali per regione - SELEZIONARE REGIONE",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:532",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:533",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, l'incidenza del numero di nuovi positivi registrati su 100.000 abitanti calcolata sull'ultimo dato disponibile",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 40
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 81
+      },
+      "id": 79,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  regioni.data AS \"time\",\n  max((regioni.nuovi_positivi)/(regdata.popolazione/100000)) as \"Casi giornalieri\",\n  regioni.denominazione_regione\nFROM regioni regioni, dati_statici regdata\nWHERE regioni.denominazione_regione = regdata.regione and regioni.data = (SELECT max(data) from regioni)\ngroup by regioni.data, regioni.denominazione_regione\nORDER BY `Casi giornalieri` desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Incidenza regionale nuovi positivi/100.000 abitanti (ultimo dato disponibile)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, l'incidenza del numero di decessi su 100.000 abitanti calcolata sull'ultimo dato disponibile",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 0.3
+              },
+              {
+                "color": "red",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 81
+      },
+      "id": 77,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  c2.data AS \"time\",\n  MAX((c2.deceduti-c1.deceduti)/(regdata.popolazione/100000)) as \"Decessi giornalieri\",\n  c1.denominazione_regione\nFROM covid19.regioni c1, covid19.regioni c2, dati_statici regdata\nWHERE c1.data = SUBDATE(c2.data, 1)  and c2.`data` = (SELECT MAX(data) from nazionale) and c2.denominazione_regione = c1.denominazione_regione and regdata.regione = c2.denominazione_regione\nGROUP by c2.denominazione_regione, c2.data\nORDER BY `Decessi giornalieri` DESC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Incidenza regionale decessi/100.000 abitanti (ultimo dato disponibile)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, le dosi di vaccino somministrate su 100.000 abitanti calcolata sull'ultimo dato disponibile (si conteggiano le singole dosi, nella lettura serve quindi tener conto delle 2 dosi/persona necessarie per l'immunizzazione)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20000
+              },
+              {
+                "color": "#EAB839",
+                "value": 40000
+              },
+              {
+                "color": "green",
+                "value": 60000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 94
+      },
+      "id": 113,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ultimo_aggiornamento AS \"time\",\n  ((dosi_somministrate)/(dati_statici.popolazione/100000)) as \"Somministrazioni\",\n  regione\nFROM somministrazioni_summary, dati_statici\nWHERE somministrazioni_summary.area = dati_statici.area\nORDER BY `Somministrazioni` desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Dosi di vaccino somministrate/100.000 abitanti (ultimo dato disponibile) - [L'IMMUNIZZAZIONE RICHIEDE 2 DOSI]",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, le dosi di vaccino somministrate su 100.000 abitanti calcolata sull'ultimo dato disponibile (si conteggiano le singole dosi, nella lettura serve quindi tener conto delle 2 dosi/persona necessarie per l'immunizzazione)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "#EAB839",
+                "value": 40
+              },
+              {
+                "color": "green",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 94
+      },
+      "id": 101,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ultimo_aggiornamento AS \"time\",\n  ((dosi_somministrate)/dati_statici.popolazione)*100 as \"Somministrazioni\",\n  regione\nFROM somministrazioni_summary, dati_statici\nWHERE somministrazioni_summary.area = dati_statici.area\nORDER BY `Somministrazioni` desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Dosi di vaccino somministrate sulla popolazione (ultimo dato disponibile) - [L'IMMUNIZZAZIONE RICHIEDE 2 DOSI]",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, le persone immunizzate su 100.000 abitanti calcolata sull'ultimo dato disponibile.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20000
+              },
+              {
+                "color": "#EAB839",
+                "value": 40000
+              },
+              {
+                "color": "semi-dark-blue",
+                "value": 60000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 107
+      },
+      "id": 114,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT now() as \"time\", (sum(seconda_dose)/(popolazione/100000)) as \"Immunizzazioni\", regione\nFROM somministrazioni_fasce, dati_statici\nWHERE dati_statici.area = somministrazioni_fasce.area\nGROUP BY regione, popolazione\nORDER BY `Immunizzazioni` desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Persone immunizzate (2 dosi ricevute)/100.000 abitanti (ultimo dato disponibile)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni regione, le persone immunizzate sull'ultimo dato disponibile dell'intera popolazione regionale.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "yellow",
+                "value": 40
+              },
+              {
+                "color": "semi-dark-blue",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 107
+      },
+      "id": 103,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT now() as \"time\", (sum(seconda_dose)/popolazione)*100 as \"Immunizzazioni\", regione\nFROM somministrazioni_fasce, dati_statici\nWHERE dati_statici.area = somministrazioni_fasce.area\nGROUP BY regione, popolazione\nORDER BY `Immunizzazioni` desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Percentuale di persone immunizzate (2 dosi ricevute) sulla popolazione (ultimo dato disponibile)",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_MYSQL}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 120
+      },
+      "id": 31,
+      "panels": [],
+      "repeat": null,
+      "title": "Grafici nazionali",
+      "type": "row"
+    },
+    {
+      "aliasColors": {
+        "Rapporto positivi/tamponi": "dark-orange",
+        "Tamponi giornalieri": "rgb(152, 161, 151)"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Per ogni giorno, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata), oltre al numero totale di tamponi giornalieri\nResta uno degli indicatori più importanti dell'andamento dell'epidemia, nonostante da solo non possa indicare se ci sia una saturazione del numero dei tamponi, ovvero se il numero di tamponi effettuati sia sufficiente a tracciare tutti o la maggior parte dei casi di contagio.\nUn numero insifficiente significherebbe una rilevante quota sommersa di casi positivi non tracciati.",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -512,13 +2933,13 @@
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 10,
+      "fill": 3,
+      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 21
+        "x": 0,
+        "y": 121
       },
       "hiddenSeries": false,
       "id": 13,
@@ -533,7 +2954,7 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 2,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -543,10 +2964,21 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:269",
+          "alias": "Tamponi giornalieri",
+          "bars": true,
+          "lines": false,
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:270"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
-      "steppedLine": true,
+      "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
@@ -554,7 +2986,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(c2.data, interval 18 hour) AS \"time\",\n  c2.nuovi_positivi/(c2.tamponi-c1.tamponi) * 100 as \"Rapporto positivi/tamponi\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n    (c2.tamponi-c1.tamponi) AS \"Tamponi giornalieri\",\n  c2.nuovi_positivi/(c2.tamponi-c1.tamponi) * 100 as \"Rapporto positivi/tamponi\"\n\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)\n",
           "refId": "B",
           "select": [
             [
@@ -580,7 +3012,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Rapporto tamponi/positivi",
+      "title": "Rapporto giornaliero positivi/tamponi e numero tamponi",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -601,7 +3033,7 @@
           "format": "percent",
           "label": "",
           "logBase": 1,
-          "max": "100",
+          "max": "50",
           "min": "0",
           "show": true
         },
@@ -610,7 +3042,7 @@
           "format": "none",
           "label": "",
           "logBase": 1,
-          "max": "250000",
+          "max": "300000",
           "min": "0",
           "show": true
         }
@@ -621,15 +3053,134 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, aggregati settimanalmente, i tamponi e i casi positivi registrati di settimana in settimana.\nLa scala logaritmica meglio rende l'idea delle velocità di crescita.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 121
+      },
+      "hiddenSeries": false,
+      "id": 69,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  SUBDATE(week2.data, WEEKDAY(week2.data)) as \"time\",\n  (MAX(week2.tamponi) - MAX(week1.tamponi)) as \"Tamponi settimanali\",\n  (MAX(week2.totale_casi) - MAX(week1.totale_casi)) as \"Nuovi positivi settimanali\"\nFROM nazionale week1, nazionale week2\nWHERE SUBDATE(week1.data, WEEKDAY(week1.data)) = SUBDATE(SUBDATE(SUBDATE(week2.data, WEEKDAY(week2.data)), 1), WEEKDAY(SUBDATE(SUBDATE(week2.data, WEEKDAY(week2.data)), 1)))\nGROUP BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Tamponi totali e casi totali settimanali (scala logaritmica)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:428",
+          "format": "none",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:429",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "aliasColors": {
-        "Ricoverati con sintomi": "yellow",
-        "Terapia intensiva": "dark-red"
+        "Dosi di vaccino somministrate": "green",
+        "Persone immunizzate (2 dosi ricevute)": "semi-dark-blue",
+        "Rapporto positivi/tamponi": "orange"
       },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "description": "Il grafico riporta a livello nazionale, per ogni giorno, il numero dei pazienti ricoverati negli ospedali nei riparti ordinari e di terapia intensiva",
+      "datasource": "${DS_MYSQL}",
+      "description": "Per ogni giorno, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata), oltre al numero totale di persone immunizzate. A fronte di una campagna vaccinale efficace, il rapporto positivi/tamponi dovrebbe diminuire con un ritardo di almeno 4-5 settimane.",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -642,7 +3193,1119 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 30
+        "y": 130
+      },
+      "hiddenSeries": false,
+      "id": 105,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:461",
+          "alias": "Dosi di vaccino somministrate",
+          "yaxis": 2
+        },
+        {
+          "alias": "Persone immunizzate (2 dosi ricevute)",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.nuovi_positivi/(c2.tamponi-c1.tamponi) * 100 as \"Rapporto positivi/tamponi\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  immunizzati as \"Persone immunizzate (2 dosi ricevute)\"\nFROM immunizzazioni\n\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Confronto tra rapporto positivi/tamponi e persone immunizzate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:396",
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:397",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Dosi di vaccino somministrate": "green",
+        "Persone immunizzate (2 dosi ricevute)": "semi-dark-blue",
+        "Ricoverati (in reparti ordinari e terapie intensive)": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Per ogni giorno, è riportato nel grafico il numero di posti letto occupati e il numero totale di persone immunizzate. A fronte di una campagna vaccinale efficace, il numero di posti letto occupati dovrebbe diminuire con un ritardo di almeno 4-5 settimane.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 130
+      },
+      "hiddenSeries": false,
+      "id": 107,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1225",
+          "alias": "Dosi di vaccino somministrate",
+          "yaxis": 2
+        },
+        {
+          "alias": "Persone immunizzate (2 dosi ricevute)",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  (c2.ricoverati_con_sintomi + c2.terapia_intensiva) AS \"Ricoverati (in reparti ordinari e terapie intensive)\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  immunizzati as \"Persone immunizzate (2 dosi ricevute)\"\nFROM immunizzazioni\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Confronto tra posti letto occupati e persone immunizzate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:964",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:965",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Guariti giornalieri": "rgb(70, 245, 49)"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, il numero di persone guarite",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 139
+      },
+      "hiddenSeries": false,
+      "id": 87,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n    (c2.dimessi_guariti-c1.dimessi_guariti) AS \"Guariti giornalieri\"\n\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Guariti giornalieri",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:458",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:459",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Guariti totali": "rgb(72, 217, 52)"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, con incrementi giornalieri, il totale dei casi guariti da inizio epidemia.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 139
+      },
+      "hiddenSeries": false,
+      "id": 53,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  dimessi_guariti as \"Guariti totali\"\nFROM covid19.nazionale\nORDER BY data",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Guariti totali da inizio epidemia",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1500",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1501",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Numero ex-casi": "yellow",
+        "Percentuale deceduti": "dark-red",
+        "Percentuale deceduti/ex-casi": "dark-red",
+        "Percentuale guariti": "semi-dark-green",
+        "Percentuale guariti/ex-casi": "dark-green"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, il rapporto tra guariti e deceduti per tutti coloro non più considerabili come \"casi contagiati\".\nViene inoltre riportato (in giallo, con scala sulla parte destra del grafico) il numero totale di guariti+deceduti a cui il rapporto fa riferimento",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 10,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 148
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:379",
+          "alias": "Numero ex-casi",
+          "bars": false,
+          "fill": 0,
+          "fillGradient": 0,
+          "lines": true,
+          "linewidth": 3,
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:380"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  (c2.deceduti-c1.deceduti)/((c2.dimessi_guariti-c1.dimessi_guariti)+(c2.deceduti-c1.deceduti))*100 AS \"Percentuale deceduti/ex-casi\",\n  (c2.dimessi_guariti-c1.dimessi_guariti)/((c2.dimessi_guariti-c1.dimessi_guariti)+(c2.deceduti-c1.deceduti))*100 AS \"Percentuale guariti/ex-casi\",\n  (c2.dimessi_guariti-c1.dimessi_guariti)+(c2.deceduti-c1.deceduti) as \"Numero ex-casi\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Analisi giornaliera guariti/deceduti (ex-casi)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1426",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1427",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Terapia intensiva": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, la ripartizione percentuale tra i pazienti in isolamento domiciliare, i pazienti ricoverati nei reparti ordinari e i pazienti ricoverati nei reparti di terapia intensiva",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 148
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.isolamento_domiciliare/c2.totale_positivi * 100 AS \"Isolamento domicialiare\",\n  c2.ricoverati_con_sintomi/c2.totale_positivi * 100 AS \"Ricoverati con sintomi\",\n  c2.terapia_intensiva/c2.totale_positivi * 100 AS \"Terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Rapporto giornaliero situazione positivi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:647",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:648",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Rapporto positivi/tamponi": "dark-orange",
+        "Ricoverati con sintomi": "dark-green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Questo grafico mostra la correlazione tra due metriche: il rapporto giornaliero tra positivi e tamponi, e il numero di ricoverati presenti giornalmente nelle strutture ospedaliere (quindi il numero di posti letto occupati per giorno)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 157
+      },
+      "hiddenSeries": false,
+      "id": 39,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:231",
+          "alias": "Rapporto positivi/tamponi",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  (c2.ricoverati_con_sintomi + c2.terapia_intensiva) AS \"Ricoverati (in reparti ordinari e terapie intensive)\",\n  c2.nuovi_positivi/(c2.tamponi-c1.tamponi) * 100 as \"Rapporto positivi/tamponi\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Correlazione giornaliera tra ricoveri (posti letto occupati) e rapporto positivi/tamponi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:110",
+          "decimals": null,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:111",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Ricoverati in degenza ordinaria": "yellow",
+        "Terapia intensiva": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, la correlazione fra i trend di crescita dei ricoverati nei reparti di degenza ordinaria e quelli in terapia intensiva.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 157
+      },
+      "hiddenSeries": false,
+      "id": 51,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1186",
+          "alias": "Terapia intensiva",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.ricoverati_con_sintomi AS \"Ricoverati in degenza ordinaria\",\n  c2.terapia_intensiva AS \"Terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Correlazione tra ricoverati ordinari e in terapia intensiva",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1156",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": "41000",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1157",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": "4100",
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Ricoverati con sintomi": "light-yellow",
+        "Terapia intensiva": "rgb(255, 0, 26)"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta a livello nazionale, per ogni giorno, il numero dei pazienti ricoverati negli ospedali nei riparti ordinari e di terapia intensiva",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 3,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 166
       },
       "hiddenSeries": false,
       "id": 17,
@@ -676,7 +4339,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(c2.data, interval 18 hour) AS \"time\",\n  c2.ricoverati_con_sintomi AS \"Ricoverati con sintomi\",\n  c2.terapia_intensiva AS \"Terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.ricoverati_con_sintomi AS \"Ricoverati con sintomi\",\n  c2.terapia_intensiva AS \"Terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
           "refId": "A",
           "select": [
             [
@@ -702,7 +4365,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Ospedalizzazioni",
+      "title": "Ospedalizzazioni giornaliere",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -719,7 +4382,8 @@
       "yaxes": [
         {
           "$$hashKey": "object:221",
-          "format": "short",
+          "decimals": null,
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -742,29 +4406,153 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Variazione ricoveri in terapia intensiva rispetto al giorno precedente": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "MySQL",
-      "description": "Il grafico mostra per ogni regione i casi totali di contagio registrati dall'inizio dell'epidemia",
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, la variazione rispetto al giorno precedente di ricoverati in reparti ordinari e di terapia intensiva, al fine di poter confrontare le due quantità",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
-          "links": []
+          "custom": {}
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 30
+        "y": 166
       },
       "hiddenSeries": false,
-      "id": 2,
+      "id": 83,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  (c2.terapia_intensiva-c1.terapia_intensiva) AS \"Variazione ricoveri in terapia intensiva rispetto al giorno precedente\",\n  (c2.ricoverati_con_sintomi-c1.ricoverati_con_sintomi) AS \"Variazione ricoveri ordinari rispetto al giorno precedente\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Confronto tra variazione giornaliera di ricoveri ordinari e terapie intensive",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:526",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:527",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Ricoverati in terapia intensiva": "super-light-red",
+        "Rischio inasprimento misure": "dark-red",
+        "Rischio lockdown comunicato dal Governo": "dark-red",
+        "Rischio lockdown ipotetico": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, il numero di pazienti ricoverati nei reparti di terapia intensiva.\nViene mostrato anche un valore, equivalente a 2300 ricoveri in terapia intensiva, considerato dal Governo una soglia critica.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 175
+      },
+      "hiddenSeries": false,
+      "id": 27,
       "legend": {
         "avg": false,
         "current": false,
@@ -785,17 +4573,24 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:360",
+          "alias": "Rischio inasprimento misure",
+          "fill": 0,
+          "linewidth": 3
+        }
+      ],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
           "group": [],
-          "metricColumn": "denominazione_regione",
+          "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  denominazione_regione AS metric,\n  sum(totale_casi)\nFROM covid19.province\ngroup by denominazione_regione, data\nORDER BY data, denominazione_regione",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  terapia_intensiva as \"Ricoverati in terapia intensiva\",\n  2300 as \"Rischio inasprimento misure\"\nFROM nazionale",
           "refId": "A",
           "select": [
             [
@@ -807,16 +4602,21 @@
               }
             ]
           ],
-          "table": "covid19.province",
-          "timeColumn": "data",
-          "where": []
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Totale infetti per regione (da inizio epidemia)",
+      "title": "Ricoveri giornalieri in terapia intensiva (con limite di \"soglia critica\")",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -832,6 +4632,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:654",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -840,6 +4641,127 @@
           "show": true
         },
         {
+          "$$hashKey": "object:655",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Variazione riceoveri in terapia intensiva rispetto al giorno precedente": "light-red"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, la variazione (positiva o negativa) del numero di pazienti in terapia intensiva rispetto al giorno precedente",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 175
+      },
+      "hiddenSeries": false,
+      "id": 47,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  (c2.terapia_intensiva-c1.terapia_intensiva) AS \"Variazione ricoveri in terapia intensiva rispetto al giorno precedente\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Variazione giornaliera di ricoveri in terapia intensiva",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:239",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:240",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -860,8 +4782,134 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "description": "Il grafico riporta, per ogni giorno, il numero di decessi registrati legati all'epidemia",
+      "datasource": "${DS_MYSQL}",
+      "description": "Nel grafico si osserva, per ogni giorno, su scale diverse, il confronto tra l'andamento dei ricoveri in terapia intensiva e quello dei decessi",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 184
+      },
+      "hiddenSeries": false,
+      "id": 93,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:334",
+          "alias": "Ricoveri in terapia intensiva",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.deceduti-c1.deceduti as \"Decessi giornalieri\",\n  c2.terapia_intensiva as \"Ricoveri in terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Confronto giornaliero tra ricoveri in terapia intensiva e decessi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:281",
+          "format": "none",
+          "label": "Decessi giornalieri",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:282",
+          "format": "none",
+          "label": "Ricoveri in terapia intensiva",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Nuovi ingressi giornalieri in terapia intensiva": "red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Nel grafico sono riportati, per ogni giorno a partire dal 03/12/2020, i nuovi ingressi in terapia intensiva, indipendentemente dalle uscite",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -873,8 +4921,132 @@
       "gridPos": {
         "h": 9,
         "w": 12,
+        "x": 12,
+        "y": 184
+      },
+      "hiddenSeries": false,
+      "id": 95,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  ingressi_terapia_intensiva as \"Nuovi ingressi giornalieri in terapia intensiva\"\nFROM nazionale",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Nuovi ingressi giornalieri in terapia intensiva (dati disponibili dal 03/12/2020)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:386",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:387",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Decessi giornalieri": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, il numero di decessi registrati legati all'epidemia",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
         "x": 0,
-        "y": 39
+        "y": 193
       },
       "hiddenSeries": false,
       "id": 23,
@@ -908,7 +5080,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(c2.data, interval 18 hour) AS \"time\",\n  c2.deceduti-c1.deceduti as \"Decessi giornalieri\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.deceduti-c1.deceduti as \"Decessi giornalieri\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
           "refId": "A",
           "select": [
             [
@@ -951,15 +5123,423 @@
       "yaxes": [
         {
           "$$hashKey": "object:121",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:122",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Decessi giornalieri": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico riporta, per ogni giorno, su scala logaritmica, il numero di decessi registrati legati all'epidemia",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 193
+      },
+      "hiddenSeries": false,
+      "id": 81,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(c2.data, interval 6 hour) AS \"time\",\n  c2.deceduti-c1.deceduti as \"Decessi giornalieri\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Decessi giornalieri (scala logaritmica)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:944",
+          "format": "short",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": "0",
+          "show": true
         },
         {
-          "$$hashKey": "object:122",
+          "$$hashKey": "object:945",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Percentuale test molecolari positivi": "light-orange",
+        "Percentuale test rapidi positivi": "light-green",
+        "Test molecolari": "dark-orange",
+        "Test rapidi": "dark-green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, il totale dei test molecolari e rapidi effettuati a livello nazionale, con percentuale dei positivi",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 202
+      },
+      "hiddenSeries": false,
+      "id": 112,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:328",
+          "alias": "Percentuale test molecolari positivi",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:329",
+          "alias": "Percentuale test rapidi positivi",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(r2.data, interval 6 hour) AS \"time\",\n  (r2.tamponi_test_antigenico_rapido - r1.tamponi_test_antigenico_rapido)  AS \"Test rapidi\",\n  (r2.tamponi_test_molecolare - r1.tamponi_test_molecolare) AS \"Test molecolari\",\n  ((r2.totale_positivi_test_antigenico_rapido-r1.totale_positivi_test_antigenico_rapido)/(r2.tamponi_test_antigenico_rapido - r1.tamponi_test_antigenico_rapido))*100 AS \"Percentuale test rapidi positivi\",\n  ((r2.totale_positivi_test_molecolare-r1.totale_positivi_test_molecolare)/(r2.tamponi_test_molecolare - r1.tamponi_test_molecolare))*100 AS \"Percentuale test molecolari positivi\"\nFROM covid19.nazionale r1, covid19.nazionale r2\nwhere r1.data = SUBDATE(r2.data, 1)\nORDER BY r2.data",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "vaccinazioni"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vaccini_categoria",
+          "timeColumn": "aggiornamento",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Test e positivi giornalieri per tamponi rapidi e molecolari",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:287",
+          "decimals": null,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:288",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Dati non disponibili": "rgb(61, 94, 100)",
+        "Dati non disponibili fino al 24/06/2020": "rgb(36, 54, 56)",
+        "Percentuale positivi da screening": "dark-green",
+        "Percentuale positivi da sospetto diagnostico": "dark-yellow"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno (a partire da quando i dati sono disponibili) un confronto tra la percentuale di casi positivi al tampone emersi da attività clinica (sospetto diagnostico) e la percentuale di casi positivi emersi da indagini e test, pianificati a livello nazionale o regionale (screening).\nUn migliore tracciamento dovuto allo screening aumenta la possibilità di rilevare e isolare positivi asintomatici.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 202
+      },
+      "hiddenSeries": false,
+      "id": 65,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  casi_da_sospetto_diagnostico/totale_casi * 100 as \"Percentuale positivi da sospetto diagnostico\",\n  casi_da_screening/totale_casi * 100 as \"Percentuale positivi da screening\"\nFROM covid19.nazionale\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  100 as \"Dati non disponibili fino al 24/06/2020\"\nFROM covid19.nazionale\nWHERE data < (\"2020-06-25\") OR data > (\"2020-12-02\")",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Rapporto giornaliero tra casi positivi emersi da sospetto diagnostico e da attività di screening (REPORT NON PIÙ ATTIVO)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:346",
+          "decimals": 1,
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:347",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -980,7 +5560,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${DS_MYSQL}",
       "description": "Il grafico riporta il numero totale di decessi registrati dall'inizio dell'epidemia ",
       "fieldConfig": {
         "defaults": {
@@ -988,13 +5568,13 @@
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 5,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 39
+        "w": 24,
+        "x": 0,
+        "y": 211
       },
       "hiddenSeries": false,
       "id": 25,
@@ -1028,7 +5608,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  deceduti as \"Decessi\"\nFROM nazionale",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  deceduti as \"Decessi\"\nFROM nazionale",
           "refId": "A",
           "select": [
             [
@@ -1054,7 +5634,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Trend decessi da inizio epidemia",
+      "title": "Trend decessi totali da inizio epidemia",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1071,7 +5651,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:542",
-          "format": "short",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1094,252 +5674,11 @@
       }
     },
     {
-      "aliasColors": {
-        "Ricoverati in terapia intensiva": "light-red"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "Il grafico riporta, per ogni giorno, il numero di pazienti ricoverati nei reparti di terapia intensiva",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 48
-      },
-      "hiddenSeries": false,
-      "id": 27,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  terapia_intensiva as \"Ricoverati in terapia intensiva\"\nFROM nazionale",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Ricoveri giornalieri in terapia intensiva",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:654",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:655",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {
-        "Terapia intensiva": "dark-red"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "Il grafico riporta, per ogni giorno, la ripartizione percentuale tra i pazienti in isolamento domiciliare, i pazienti ricoverati nei reparti ordinari e i pazienti ricoverati nei reparti di terapia intensiva",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 48
-      },
-      "hiddenSeries": false,
-      "id": 19,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.2.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(c2.data, interval 18 hour) AS \"time\",\n  c2.isolamento_domiciliare/c2.totale_positivi * 100 AS \"Isolamento domicialiare\",\n  c2.ricoverati_con_sintomi/c2.totale_positivi * 100 AS \"Ricoverati con sintomi\",\n  c2.terapia_intensiva/c2.totale_positivi * 100 AS \"Terapia intensiva\"\nFROM covid19.nazionale c1, covid19.nazionale c2\nWHERE c1.data = SUBDATE(c2.data, 1)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Rapporto situazione positivi",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:647",
-          "decimals": 1,
-          "format": "percent",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:648",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "MySQL",
+      "datasource": "${DS_MYSQL}",
       "description": "Nel grafico è riportato il numero totale di casi di contagio tracciati dall'inizio dell'epidemia",
       "fieldConfig": {
         "defaults": {
@@ -1351,10 +5690,10 @@
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 12,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 220
       },
       "hiddenSeries": false,
       "id": 3,
@@ -1363,6 +5702,7 @@
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -1394,7 +5734,7 @@
           "group": [],
           "metricColumn": "denominazione_regione",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 18 hour) AS \"time\",\n  sum(totale_casi) as \"Casi totali\"\nFROM covid19.province\ngroup by data\nORDER BY data",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  totale_casi as \"Casi totali\"\nFROM covid19.nazionale\nORDER BY data",
           "refId": "A",
           "select": [
             [
@@ -1413,21 +5753,9 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [
-        {
-          "$$hashKey": "object:520",
-          "colorMode": "gray",
-          "fill": true,
-          "fillColor": "rgba(234, 112, 112, 0.12)",
-          "fromDayOfWeek": 6,
-          "line": false,
-          "lineColor": "rgba(237, 46, 24, 0.60)",
-          "op": "time",
-          "toDayOfWeek": 7
-        }
-      ],
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Trend nazionale (totale casi da inizio epidemia)",
+      "title": "Trend nazionale contagi (totale casi da inizio epidemia)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1467,16 +5795,137 @@
       }
     },
     {
-      "circleMaxSize": 30,
-      "circleMinSize": 2,
+      "aliasColors": {
+        "Positivi giornalieri": "semi-dark-orange"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "description": "Il grafico mostra, per ogni giorno, il numero di nuovi casi rilevati",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 229
+      },
+      "hiddenSeries": false,
+      "id": 75,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 3,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  nuovi_positivi as \"Positivi giornalieri\"\nFROM covid19.nazionale",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Trend nazionale contagi (nuovi casi rilevati giornalieri)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:994",
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:995",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "circleMaxSize": "3",
+      "circleMinSize": "3",
       "colors": [
         "#37872D",
         "#F2CC0C",
-        "#F2495C"
+        "#FF9830",
+        "#C4162A"
       ],
-      "datasource": null,
+      "datasource": "${DS_MYSQL}",
       "decimals": 0,
-      "description": "La cartina mostra a livello provinciale l'impatto del virus, mostrando i casi totali da inizio epidemia.\nIn rosso le province che hanno registrato più di 20.000 casi, in giallo le province che hanno registrato tra i 5.000 e i 20.000 casi, e in verde le province che hanno registrato meno di 5.000 casi da inizio epidemia",
+      "description": "La cartina mostra a livello provinciale l'impatto del virus, mostrando i casi totali da inizio epidemia.\nIn rosso le province che hanno registrato più di 40.000 casi, in arancione le province che hanno registrato tra i 20.000 e i 40.000 casi, in giallo le province che hanno registrato tra i 5.000 e i 20.000 casi, e in verde le province che hanno registrato meno di 5.000 casi da inizio epidemia",
       "esMetric": "Count",
       "fieldConfig": {
         "defaults": {
@@ -1505,7 +5954,7 @@
         "h": 23,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 238
       },
       "hideEmpty": false,
       "hideZero": false,
@@ -1556,7 +6005,7 @@
           ]
         }
       ],
-      "thresholds": "5000,20000",
+      "thresholds": "5000,20000,40000",
       "timeFrom": null,
       "timeShift": null,
       "title": "Casi totali da inizio epidemia",
@@ -1564,6 +6013,250 @@
       "unitPlural": "",
       "unitSingle": "",
       "valueName": "total"
+    },
+    {
+      "circleMaxSize": 30,
+      "circleMinSize": 2,
+      "colors": [
+        "#73BF69",
+        "#FADE2A",
+        "#FF9830",
+        "#C4162A"
+      ],
+      "datasource": "${DS_MYSQL}",
+      "decimals": 0,
+      "description": "La mappa mostra, per ogni regione, l'ultimo numero disponibile di casi positivi totali ",
+      "esMetric": "Count",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 24,
+        "x": 0,
+        "y": 261
+      },
+      "hideEmpty": false,
+      "hideZero": false,
+      "id": 89,
+      "initialZoom": "6",
+      "locationData": "table",
+      "mapCenter": "custom",
+      "mapCenterLatitude": "41.902782,12.496366",
+      "mapCenterLongitude": 14,
+      "maxDataPoints": 1,
+      "mouseWheelZoom": false,
+      "pluginVersion": "7.2.1",
+      "showLegend": true,
+      "stickyLabels": false,
+      "tableQueryOptions": {
+        "geohashField": "geohash",
+        "labelField": "denominazione_regione",
+        "latitudeField": "lat",
+        "longitudeField": "long",
+        "metricField": "tot",
+        "queryType": "coordinates"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT `long`, lat, denominazione_regione, (isolamento_domiciliare + ricoverati_con_sintomi + terapia_intensiva) as tot\nFROM covid19.regioni\nwhere `long`<>0\n  and data = (SELECT max(data) FROM nazionale)\norder by `long`, lat, denominazione_regione",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "10000,50000,100000",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Positivi giornalieri",
+      "type": "grafana-worldmap-panel",
+      "unitPlural": "",
+      "unitSingle": "",
+      "valueName": "total"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 284
+      },
+      "id": 35,
+      "options": {
+        "content": "# Guida alla consultazione\n\n#### Grafici regionali/nazionali\nLa prima sezione di grafici contiene i grafici regionali. I dati di questi grafici fanno riferimento a province e regioni: selezionando una regione dal menu in alto, questi grafici si aggiorneranno mostrando i dati relativi alla regione selezionata.  \nIl secondo gruppo, invece, presenta grafici con i dati nazionali, non divisi per regioni.\n\n#### Grafici totali/giornalieri\nI grafici in generale si dividono in \"totali\" e \"giornalieri\". Nei grafici \"totali\", per ogni giorno vengono riportati valori aggregati dati dalla somma di tutti i valori giornalieri da inizio epidemia; nei grafici \"giornalieri\", vengono invece riportati i dati raccolti in ogni singolo giorno.  \nPerciò, ad esempio, se in un grafico \"giornaliero\" i primi 3 valori fossero 3, 7 e 18 (il che significa un valore 3 relativo al primo giorno, un valore 7 relativo al secondo giorno e un valore 18 relativo al terzo giorno), un equivalente grafico \"totale\", che volesse esprimere lo stesso dato, dovrebbe riportare il valore 3 nel primo giorno (non essendoci valori precedenti), un valore 10 nel secondo giorno (che è la somma dei valori dei primi due giorni) e un valore 28 nel terzo giorno (che è la somma dei valori dei primi 3 giorni).\n\n#### Consultazione di un grafico \nOgni grafico è corredato di un titolo e una descrizione (visualizzabile passando il puntatore del mouse sulla \"i\" che si vede nell'angolo in alto a sinistra di ogni grafico).  \nSpostando il puntatore del mouse lungo il grafico, si possono visualizzare i valori precisi riportati nel grafico stesso.  \nCliccando su un punto di un grafico e trascinando il mouse, si può fare lo zoom dell'area di grafico di proprio interesse (un particolare periodo, ad esempio): per tornare alla visualizzazione classica si può ricarica la pagina https://covid-italy.marcogasparri.com. Inoltre, in alto a destra, è presente un tool per cambiare l'intervallo temporale preso in esame da tutti i grafici della pagina.  \n\n\n  --  \n    \n*NOTA*: eventuali metriche con la dicitura \"[BETA]\" nel titolo rappresentano metriche sperimentali in corso di valutazione.\n  \n*DISCLAIMER*: i dati originali si basano su quelli forniti dal Dipartimento di Protezione Civile, perciò in caso di errori in quei dati potrebbero esserci errori propagati sulle statistiche.  \nInoltre, le analisi sono frutto di elaborazioni non professionali, che cercano di dare però una visione il più possibile completa della realtà: in caso di obiezioni, vi chiedo gentilmente di contattarmi e inviarmi segnalazioni all'indirizzo mg@marcogasparri.com",
+        "mode": "markdown"
+      },
+      "pluginVersion": "7.1.0",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Guida alla consultazione",
+      "type": "text"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 298
+      },
+      "id": 49,
+      "options": {
+        "content": "# Contatti\n\nPer segnalazioni, proposte di metriche/grafici da aggiungere, o altre comunicazioni, scrivere un'e-mail a: mg@marcogasparri.com         ",
+        "mode": "markdown"
+      },
+      "pluginVersion": "7.1.0",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Contatti",
+      "type": "text"
+    },
+    {
+      "datasource": "${DS_MYSQL}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 301
+      },
+      "id": 85,
+      "options": {
+        "content": "<span style=\"text-align:center; margin: 0 auto;\">La policy relativa a privacy e cookie è visualizzabile <a href=\"https://marcogasparri.com/privacy.html\" target=\"blank\">QUI</a></span>",
+        "mode": "html"
+      },
+      "pluginVersion": "7.1.0",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Privacy policy",
+      "type": "text"
     }
   ],
   "refresh": false,
@@ -1580,12 +6273,8 @@
     "list": [
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "Abruzzo",
-          "value": "Abruzzo"
-        },
-        "datasource": "MySQL",
+        "current": {},
+        "datasource": "${DS_MYSQL}",
         "definition": "select distinct denominazione_regione from covid19.province",
         "hide": 0,
         "includeAll": false,
@@ -1627,5 +6316,5 @@
   "timezone": "",
   "title": "COVID-19 - Analisi Italia",
   "uid": "mpb6UnuWk",
-  "version": 19
+  "version": 223
 }
