@@ -10,9 +10,10 @@ CREATE TABLE `dati_statici` (
   `soglia_emergenza` int(11) DEFAULT NULL,
   `area` varchar(255) DEFAULT NULL,
   `rt_iss` double DEFAULT NULL,
+  `rt_iss_prec` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 
 
@@ -109,7 +110,13 @@ CREATE TABLE `somministrazioni` (
   `categoria_operatori_sanitari_sociosanitari` int(11) DEFAULT NULL,
   `categoria_personale_non_sanitario` int(11) DEFAULT NULL,
   `categoria_ospiti_rsa` int(11) DEFAULT NULL,
+  `categoria_personale_scolastico` int(11) DEFAULT NULL,
+  `categoria_60_69` int(11) DEFAULT '0',
+  `categoria_70_79` int(11) DEFAULT '0',
   `categoria_over80` text,
+  `categoria_soggetti_fragili` int(11) DEFAULT '0',
+  `categoria_forze_armate` int(11) DEFAULT NULL,
+  `categoria_altro` int(11) DEFAULT NULL,
   `prima_dose` text,
   `seconda_dose` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -124,9 +131,15 @@ CREATE TABLE `somministrazioni_fasce` (
   `categoria_operatori_sanitari_sociosanitari` int(11) DEFAULT NULL,
   `categoria_personale_non_sanitario` int(11) DEFAULT NULL,
   `categoria_ospiti_rsa` int(11) DEFAULT NULL,
+  `categoria_60_69` int(11) DEFAULT '0',
+  `categoria_70_79` int(11) DEFAULT '0',
   `categoria_over80` text,
-  `prima_dose` text,
-  `seconda_dose` text
+  `categoria_forze_armate` text,
+  `categoria_personale_scolastico` text,
+  `categoria_soggetti_fragili` int(11) DEFAULT '0',
+  `categoria_altro` text,
+  `prima_dose` int(11) DEFAULT '0',
+  `seconda_dose` int(11) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `somministrazioni_summary` (
@@ -195,14 +208,13 @@ BEGIN
     START TRANSACTION;
 		TRUNCATE immunizzazioni;
     	INSERT INTO immunizzazioni(data_immunizzazione, immunizzati)
-    	SELECT
-			data_somministrazione as "data_immunizzazione",
-			(select sum(seconda_dose) from somministrazioni_fasce where data_somministrazione <= `data_immunizzazione`) as "immunizzati"
-		FROM somministrazioni_fasce
-		GROUP by data_immunizzazione;
+    	SELECT data_somministrazione as "data_immunizzazione",
+(select sum(seconda_dose)+(select sum(prima_dose) from somministrazioni_fasce WHERE fornitore='Janssen' and data_somministrazione <= `data_immunizzazione` and data_somministrazione >= '2021-01-01') as "immunizzati" from somministrazioni where data_somministrazione <= `data_immunizzazione` and data_somministrazione >= '2021-01-01')
+FROM somministrazioni
+WHERE data_somministrazione >= '2021-01-01'
+GROUP by data_immunizzazione;
     COMMIT;
 END;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `decessi_giornalieri` AS select `c2`.`data` AS `data`,(`c2`.`deceduti` - `c1`.`deceduti`) AS `deceduti` from (`nazionale` `c1` join `nazionale` `c2`) where (`c1`.`data` = (`c2`.`data` - interval 1 day));
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `incrementi_settimanali` AS select (`week3`.`data` - interval weekday(`week3`.`data`) day) AS `time`,(((max(`week3`.`tamponi`) - max(`week2`.`tamponi`)) / (max(`week2`.`tamponi`) - max(`week1`.`tamponi`))) * 100) AS `delta_tamp_sett`,((sum(`week2`.`nuovi_positivi`) / sum(`week1`.`nuovi_positivi`)) * 100) AS `delta_pos_sett` from ((`nazionale` `week1` join `nazionale` `week2`) join `nazionale` `week3`) where (((`week1`.`data` - interval weekday(`week1`.`data`) day) = (((`week2`.`data` - interval weekday(`week2`.`data`) day) - interval 1 day) - interval weekday(((`week2`.`data` - interval weekday(`week2`.`data`) day) - interval 1 day)) day)) and ((`week2`.`data` - interval weekday(`week2`.`data`) day) = (((`week3`.`data` - interval weekday(`week3`.`data`) day) - interval 1 day) - interval weekday(((`week3`.`data` - interval weekday(`week3`.`data`) day) - interval 1 day)) day))) group by `time`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vaccini_somministrazioni_latest` AS select `covid19`.`vaccini_somministrazioni`.`regione` AS `regione`,`covid19`.`vaccini_somministrazioni`.`somministrazioni` AS `somministrazioni`,`covid19`.`vaccini_somministrazioni`.`percentuale` AS `percentuale`,`covid19`.`vaccini_somministrazioni`.`dosiConsegnate` AS `dosiConsegnate`,`covid19`.`vaccini_somministrazioni`.`aggiornamento` AS `aggiornamento`,`covid19`.`vaccini_somministrazioni`.`codice_regione` AS `codice_regione`,date_format(`t`.`max_time`,'%Y-%m-%d') AS `data` from (`covid19`.`vaccini_somministrazioni` join (select max(`covid19`.`vaccini_somministrazioni`.`aggiornamento`) AS `max_time` from `covid19`.`vaccini_somministrazioni` group by cast(`covid19`.`vaccini_somministrazioni`.`aggiornamento` as date)) `t` on((`covid19`.`vaccini_somministrazioni`.`aggiornamento` = `t`.`max_time`)));
-

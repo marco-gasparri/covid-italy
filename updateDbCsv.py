@@ -22,8 +22,6 @@ def updateDbFromCsv(repoBasePath, csvRelativePath, cursor, tableName, lastColumn
     for row in csv_data:
         nullifyEmptyValues(row)
         if headerRead:
-            #for toPop in range(rowSize, rowSize + lastColumnsToIgnore):
-            #    row.pop(toPop)
             query = "INSERT INTO " + tableName + " (" + columnNamesString + ") VALUES (" + placeHolderString + ")"
             cursor.execute (query, tuple(row))
         else:
@@ -77,8 +75,8 @@ def main():
 
     print("CSV import from vaccines repo...")
     cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/vaccini-summary-latest.csv' INTO TABLE somministrazioni_summary FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (area,dosi_somministrate,dosi_consegnate,percentuale_somministrazione,ultimo_aggiornamento)");
-    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-summary-latest.csv' INTO TABLE somministrazioni FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,area,totale,sesso_maschile,sesso_femminile,categoria_operatori_sanitari_sociosanitari,categoria_personale_non_sanitario,categoria_ospiti_rsa,categoria_over80,prima_dose,seconda_dose)");
-    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-latest.csv' INTO TABLE somministrazioni_fasce FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,fornitore,area,fascia_anagrafica,sesso_maschile,sesso_femminile,categoria_operatori_sanitari_sociosanitari,categoria_personale_non_sanitario,categoria_ospiti_rsa,categoria_over80,prima_dose,seconda_dose)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-summary-latest.csv' INTO TABLE somministrazioni FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,area,totale,sesso_maschile,sesso_femminile,prima_dose,seconda_dose)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-latest.csv' INTO TABLE somministrazioni_fasce FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,fornitore,area,fascia_anagrafica,sesso_maschile,sesso_femminile,prima_dose,seconda_dose)");
     print("CSV imported from vaccines repo.")
 
     print("Executing last tasks...")
