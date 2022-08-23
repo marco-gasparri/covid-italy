@@ -17,7 +17,7 @@
   "gnetId": 11884,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1634717913382,
+  "iteration": 1661243285104,
   "links": [
     {
       "icon": "external link",
@@ -331,6 +331,34 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Nuovi positivi (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Nuovi positivi (IERI)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           }
@@ -429,6 +457,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -449,6 +481,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -473,6 +509,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           }
@@ -727,6 +767,42 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tamponi (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tamponi (IERI)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incremento tamponi (OGGI)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
           }
         ]
       },
@@ -839,7 +915,7 @@
           "group": [],
           "metricColumn": "denominazione_regione",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  denominazione_regione AS metric,\n  sum(totale_casi)\nFROM covid19.province\ngroup by denominazione_regione, data\nORDER BY data, denominazione_regione",
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  denominazione_regione AS metric,\n  sum(totale_casi)\nFROM covid19.province\nWHERE denominazione_regione is not null\ngroup by denominazione_regione, data\nORDER BY data, denominazione_regione",
           "refId": "A",
           "select": [
             [
@@ -876,7 +952,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:267",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -885,7 +960,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:268",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -938,6 +1012,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -958,6 +1036,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -1018,6 +1100,66 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% popolazione immunizzata"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "semi-dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% popolazione con dose addizionale/booster"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           }
@@ -1025,7 +1167,7 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 17
       },
@@ -1077,7 +1219,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  SUM(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce WHERE fornitore='Janssen') as \"Persone immunizzate\"\nfrom\n  somministrazioni_fasce",
+          "rawSql": "SELECT\n  SUM(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce WHERE fornitore='Janssen') as \"Persone immunizzate\",\n  ((SUM(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce WHERE fornitore='Janssen'))/(SELECT SUM(popolazione) FROM dati_statici) * 100) as \"% popolazione immunizzata\",\n  ((SUM(dose_addizionale_booster))/(SELECT SUM(popolazione) FROM dati_statici) * 100) as \"% popolazione con dose addizionale/booster\"\nfrom\n  somministrazioni_fasce",
           "refId": "B",
           "select": [
             [
@@ -1145,6 +1287,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -1165,6 +1311,10 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
               }
             ]
           },
@@ -1225,6 +1375,62 @@
                     }
                   ]
                 }
+              },
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% popolazione immunizzata"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "semi-dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% popolazione con dose addizionale/booster"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           }
@@ -1232,9 +1438,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 17
+        "w": 24,
+        "x": 0,
+        "y": 26
       },
       "id": 99,
       "options": {
@@ -1284,7 +1490,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select\nsum(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce, dati_statici WHERE somministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione' AND fornitore='Janssen') as \"Persone immunizzate\"\nfrom \nsomministrazioni_fasce, dati_statici\nwhere \nsomministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione'",
+          "rawSql": "select\nsum(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce, dati_statici WHERE somministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione' AND fornitore='Janssen') as \"Persone immunizzate\",\n(sum(seconda_dose)+(SELECT SUM(prima_dose) FROM somministrazioni_fasce, dati_statici WHERE somministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione' AND fornitore='Janssen'))/(SELECT popolazione from dati_statici where regione = '$Regione') as \"% popolazione immunizzata\",\n(sum(dose_addizionale_booster))/(SELECT popolazione from dati_statici where regione = '$Regione') as \"% popolazione con dose addizionale/booster\"\nfrom \nsomministrazioni_fasce, dati_statici\nwhere \nsomministrazioni_fasce.area = dati_statici.area AND dati_statici.regione = '$Regione'",
           "refId": "B",
           "select": [
             [
@@ -1322,7 +1528,16 @@
             "align": null,
             "filterable": false
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "",
+              "to": "",
+              "type": 1,
+              "value": ""
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1334,13 +1549,38 @@
           },
           "unit": "none"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Maschi"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Femmine"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "locale"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 0,
-        "y": 26
+        "y": 35
       },
       "id": 119,
       "options": {
@@ -1412,7 +1652,7 @@
         "h": 9,
         "w": 15,
         "x": 9,
-        "y": 26
+        "y": 35
       },
       "hiddenSeries": false,
       "id": 21,
@@ -1488,7 +1728,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:270",
           "decimals": null,
           "format": "none",
           "label": null,
@@ -1498,7 +1737,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:271",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1519,7 +1757,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 44
       },
       "id": 33,
       "panels": [],
@@ -1546,7 +1784,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 36
+        "y": 45
       },
       "hiddenSeries": false,
       "id": 6,
@@ -1617,7 +1855,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:160",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -1626,7 +1863,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:161",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1664,7 +1900,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 36
+        "y": 45
       },
       "hiddenSeries": false,
       "id": 111,
@@ -1690,12 +1926,10 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:328",
           "alias": "Percentuale test molecolari positivi",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:329",
           "alias": "Percentuale test rapidi positivi",
           "yaxis": 2
         }
@@ -1753,17 +1987,15 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:287",
           "decimals": null,
           "format": "none",
           "label": null,
           "logBase": 1,
-          "max": "70000",
+          "max": "150000",
           "min": "0",
           "show": true
         },
         {
-          "$$hashKey": "object:288",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -1797,7 +2029,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 41,
@@ -1873,7 +2105,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:129",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -1883,7 +2114,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:130",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1921,7 +2151,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 43,
@@ -1947,7 +2177,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:1082",
           "alias": "Ricoverati in terapia intensiva",
           "fill": 2
         }
@@ -2003,7 +2232,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:779",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -2012,7 +2240,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:780",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -2047,7 +2274,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 63
       },
       "hiddenSeries": false,
       "id": 71,
@@ -2123,7 +2350,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:156",
           "decimals": null,
           "format": "none",
           "label": null,
@@ -2133,7 +2359,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:157",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2170,7 +2395,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 63
       },
       "hiddenSeries": false,
       "id": 73,
@@ -2196,12 +2421,10 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:735",
           "alias": "Dosi di vaccino somministrate",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:736",
           "alias": "Persone immunizzate (2 dosi ricevute)",
           "yaxis": 2
         }
@@ -2257,7 +2480,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:532",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -2266,7 +2488,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:533",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -2316,7 +2537,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 63
+        "y": 72
       },
       "id": 79,
       "options": {
@@ -2401,7 +2622,7 @@
         "h": 13,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 72
       },
       "id": 77,
       "options": {
@@ -2452,11 +2673,10 @@
     },
     {
       "datasource": null,
-      "description": "Il grafico mostra, per ogni regione, le dosi di vaccino somministrate su 100.000 abitanti calcolata sull'ultimo dato disponibile.",
+      "description": "Il grafico mostra, per ogni regione, le dosi di vaccino somministrate.",
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -2479,7 +2699,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "locale"
         },
         "overrides": []
       },
@@ -2487,7 +2707,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 76
+        "y": 85
       },
       "id": 101,
       "options": {
@@ -2509,7 +2729,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  ultimo_aggiornamento AS \"time\",\n  ((dosi_somministrate)/dati_statici.popolazione)*100 as \"Somministrazioni\",\n  regione\nFROM somministrazioni_summary, dati_statici\nWHERE somministrazioni_summary.area = dati_statici.area\nORDER BY `Somministrazioni` desc",
+          "rawSql": "SELECT\n  ultimo_aggiornamento AS \"time\",\n  dosi_somministrate as \"Somministrazioni\",\n  regione\nFROM somministrazioni_summary, dati_statici\nWHERE somministrazioni_summary.area = dati_statici.area\nORDER BY `Somministrazioni` desc",
           "refId": "A",
           "select": [
             [
@@ -2535,7 +2755,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Dosi singole di vaccino somministrate sulla popolazione (ultimo dato disponibile)",
+      "title": "Dosi singole di vaccino somministrate (ultimo dato disponibile)",
       "type": "bargauge"
     },
     {
@@ -2575,7 +2795,7 @@
         "h": 13,
         "w": 12,
         "x": 12,
-        "y": 76
+        "y": 85
       },
       "id": 103,
       "options": {
@@ -2583,7 +2803,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "max"
           ],
           "fields": "",
           "values": false
@@ -2597,7 +2817,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, regione, Immunizzazioni from(\nSELECT now() as \"time\", \nregione,\nsomministrazioni_fasce.area as \"areaLoc\",\n((sum(seconda_dose)+(SELECT IF(SUM(prima_dose) IS NULL, 0, sum(prima_dose)) FROM somministrazioni_fasce WHERE fornitore='Janssen' and somministrazioni_fasce.area = areaLoc))/popolazione)*100 as \"Immunizzazioni\"\nFROM somministrazioni_fasce, dati_statici\nWHERE dati_statici.area = somministrazioni_fasce.area\nGROUP BY regione, somministrazioni_fasce.area, popolazione\nORDER BY `Immunizzazioni` desc\n) as t",
+          "rawSql": "SELECT `time`, regione, immunizzazioni FROM immunzzazioni_regioni ORDER BY immunizzazioni DESC",
           "refId": "A",
           "select": [
             [
@@ -2633,13 +2853,152 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 89
+        "y": 98
       },
       "id": 31,
       "panels": [],
       "repeat": null,
       "title": "Grafici nazionali",
       "type": "row"
+    },
+    {
+      "aliasColors": {
+        "Nuovi positivi giornalieri": "yellow",
+        "Rapporto positivi/tamponi": "dark-orange",
+        "Tamponi giornalieri": "rgb(152, 161, 151)"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Per ogni giorno, è riportato il numero di nuovi positivi registrato",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 3,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 99
+      },
+      "hiddenSeries": false,
+      "id": 120,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data, interval 6 hour) AS \"time\",\n  nuovi_positivi as \"Nuovi positivi giornalieri\"\nFROM covid19.nazionale \n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Nuovi giornalieri positivi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "locale",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "none",
+          "label": "",
+          "logBase": 1,
+          "max": "1000000",
+          "min": "0",
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {
@@ -2677,7 +3036,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 90
+        "y": 108
       },
       "hiddenSeries": false,
       "id": 13,
@@ -2704,15 +3063,12 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:269",
           "alias": "Tamponi giornalieri",
           "bars": true,
           "lines": false,
           "yaxis": 2
         },
-        {
-          "$$hashKey": "object:270"
-        }
+        {}
       ],
       "spaceLength": 10,
       "stack": false,
@@ -2766,7 +3122,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:481",
           "decimals": 1,
           "format": "percent",
           "label": "",
@@ -2776,11 +3131,10 @@
           "show": true
         },
         {
-          "$$hashKey": "object:482",
           "format": "none",
           "label": "",
           "logBase": 1,
-          "max": "400000",
+          "max": null,
           "min": "0",
           "show": true
         }
@@ -2809,7 +3163,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 90
+        "y": 108
       },
       "hiddenSeries": false,
       "id": 69,
@@ -2885,7 +3239,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:428",
           "format": "none",
           "label": null,
           "logBase": 2,
@@ -2894,7 +3247,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:429",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2919,7 +3271,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "Per ogni giorno, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata), oltre al numero totale di persone immunizzate ogni 100.000. A fronte di una campagna vaccinale efficace, il rapporto positivi/tamponi dovrebbe diminuire con un ritardo di almeno 4-5 settimane.",
+      "description": "Per ogni giorno, è riportato nel grafico il rapporto fra nuovi positivi e tamponi effettuati (nella stessa giornata), oltre al numero totale di persone immunizzate ogni 100.000 e al numero di persone che hanno ricevuto la dose addizionale/booster ogni 100.000.",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2932,7 +3284,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 99
+        "y": 117
       },
       "hiddenSeries": false,
       "id": 105,
@@ -2958,13 +3310,15 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:461",
           "alias": "Dosi di vaccino somministrate",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:145",
           "alias": "Immunizzati/100.000 abitanti",
+          "yaxis": 2
+        },
+        {
+          "alias": "Dose booster/100.000 abitanti",
           "yaxis": 2
         }
       ],
@@ -3005,7 +3359,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  (immunizzati/(60360000/100000)) as \"Immunizzati/100.000 abitanti\"\nFROM immunizzazioni\n\n",
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  (immunizzati/603.6) as \"Immunizzati/100.000 abitanti\"\nFROM immunizzazioni\nORDER BY time\n",
           "refId": "B",
           "select": [
             [
@@ -3027,13 +3381,39 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  (booster/603.6) as \"Dose booster/100.000 abitanti\"\nFROM immunizzazioni\nORDER BY time",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Confronto tra rapporto positivi/tamponi e persone immunizzate/100.000 abitanti",
+      "title": "Confronto tra rapporto positivi/tamponi, persone immunizzate/100.000 abitanti e persone con dose addizionale/100.000 abitanti",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -3049,16 +3429,15 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:396",
           "format": "percent",
           "label": null,
           "logBase": 1,
-          "max": "100",
+          "max": "50",
           "min": "0",
           "show": true
         },
         {
-          "$$hashKey": "object:397",
+          "decimals": 2,
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3083,7 +3462,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "Per ogni giorno, è riportato nel grafico il numero di posti letto occupati e il numero totale di persone immunizzate ogni 100.000. A fronte di una campagna vaccinale efficace, il numero di posti letto occupati dovrebbe diminuire con un ritardo di almeno 4-5 settimane.",
+      "description": "Per ogni giorno, è riportato nel grafico il numero di posti letto occupati e il numero totale di persone immunizzate ogni 100.000 e di quelle che hanno ricevuto la dose addizionale/booster ogni 100.000.",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3096,7 +3475,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 99
+        "y": 117
       },
       "hiddenSeries": false,
       "id": 107,
@@ -3122,17 +3501,14 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:1225",
           "alias": "Dosi di vaccino somministrate",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:576",
           "alias": "Immunizzati/100.000 abitanti",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:615",
           "alias": "Immunizzati/100.000 abitanti",
           "yaxis": 2
         }
@@ -3174,7 +3550,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  (immunizzati/(60360000/100000)) as \"Immunizzati/100.000 abitanti\"\nFROM immunizzazioni\n",
+          "rawSql": "SELECT\n  date_add(data_immunizzazione, interval 6 hour) AS \"time\",\n  (immunizzati/(60360000/100000)) as \"Immunizzati/100.000 abitanti\",\n  (booster/(60360000/100000)) as \"Dose addizionale/100.000 abitanti\"\nFROM immunizzazioni\nORDER BY time",
           "refId": "B",
           "select": [
             [
@@ -3202,7 +3578,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Confronto tra posti letto occupati e persone immunizzate/100.000 abitanti",
+      "title": "Confronto tra posti letto occupati, persone immunizzate/100.000 abitanti e persone con dose addizionale/100.000 abitanti",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -3218,7 +3594,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:964",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3227,7 +3602,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:965",
+          "decimals": 2,
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3276,7 +3651,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 108
+        "y": 126
       },
       "hiddenSeries": false,
       "id": 87,
@@ -3352,7 +3727,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:458",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3361,7 +3735,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:459",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -3396,7 +3769,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 108
+        "y": 126
       },
       "hiddenSeries": false,
       "id": 53,
@@ -3472,7 +3845,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1500",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3481,7 +3853,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1501",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -3537,7 +3908,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 117
+        "y": 135
       },
       "hiddenSeries": false,
       "id": 15,
@@ -3565,7 +3936,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:379",
           "alias": "Numero ex-casi",
           "bars": false,
           "fill": 0,
@@ -3574,9 +3944,7 @@
           "linewidth": 3,
           "yaxis": 2
         },
-        {
-          "$$hashKey": "object:380"
-        }
+        {}
       ],
       "spaceLength": 10,
       "stack": true,
@@ -3629,7 +3997,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1426",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -3639,7 +4006,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1427",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -3674,7 +4040,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 117
+        "y": 135
       },
       "hiddenSeries": false,
       "id": 19,
@@ -3750,7 +4116,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:647",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -3760,7 +4125,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:648",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -3796,7 +4160,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 126
+        "y": 144
       },
       "hiddenSeries": false,
       "id": 39,
@@ -3822,7 +4186,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:231",
           "alias": "Rapporto positivi/tamponi",
           "yaxis": 2
         }
@@ -3878,7 +4241,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:110",
           "decimals": null,
           "format": "none",
           "label": null,
@@ -3888,12 +4250,11 @@
           "show": true
         },
         {
-          "$$hashKey": "object:111",
           "decimals": 1,
           "format": "percent",
           "label": null,
           "logBase": 1,
-          "max": "100",
+          "max": "50",
           "min": "0",
           "show": true
         }
@@ -3925,7 +4286,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 126
+        "y": 144
       },
       "hiddenSeries": false,
       "id": 51,
@@ -3951,7 +4312,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:1186",
           "alias": "Terapia intensiva",
           "yaxis": 2
         }
@@ -4007,7 +4367,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1156",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -4016,7 +4375,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1157",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -4052,7 +4410,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 135
+        "y": 153
       },
       "hiddenSeries": false,
       "id": 17,
@@ -4128,7 +4486,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:221",
           "decimals": null,
           "format": "none",
           "label": null,
@@ -4138,7 +4495,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:222",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4173,7 +4529,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 135
+        "y": 153
       },
       "hiddenSeries": false,
       "id": 83,
@@ -4249,7 +4605,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:526",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4258,7 +4613,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:527",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4297,7 +4651,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 144
+        "y": 162
       },
       "hiddenSeries": false,
       "id": 27,
@@ -4323,13 +4677,11 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:360",
           "alias": "Soglia del 30% delle terapie intensive occupate",
           "fill": 0,
           "linewidth": 3
         },
         {
-          "$$hashKey": "object:294",
           "alias": "Soglia del 40% delle terapie intensive occupate",
           "fill": 0,
           "linewidth": 3
@@ -4386,7 +4738,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:654",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -4395,7 +4746,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:655",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4430,7 +4780,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 144
+        "y": 162
       },
       "hiddenSeries": false,
       "id": 47,
@@ -4506,7 +4856,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:239",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -4515,7 +4864,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:240",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4550,7 +4898,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 153
+        "y": 171
       },
       "hiddenSeries": false,
       "id": 93,
@@ -4576,7 +4924,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:334",
           "alias": "Ricoveri in terapia intensiva",
           "yaxis": 2
         }
@@ -4632,7 +4979,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:281",
           "format": "none",
           "label": "Decessi giornalieri",
           "logBase": 1,
@@ -4641,7 +4987,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:282",
           "format": "none",
           "label": "Ricoveri in terapia intensiva",
           "logBase": 1,
@@ -4676,7 +5021,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 153
+        "y": 171
       },
       "hiddenSeries": false,
       "id": 95,
@@ -4756,7 +5101,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:386",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4765,7 +5109,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:387",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4800,7 +5143,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 162
+        "y": 180
       },
       "hiddenSeries": false,
       "id": 23,
@@ -4876,7 +5219,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:121",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -4885,7 +5227,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:122",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -4920,7 +5261,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 162
+        "y": 180
       },
       "hiddenSeries": false,
       "id": 81,
@@ -4996,7 +5337,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:944",
           "format": "short",
           "label": null,
           "logBase": 2,
@@ -5005,7 +5345,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:945",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -5043,7 +5382,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 171
+        "y": 189
       },
       "hiddenSeries": false,
       "id": 112,
@@ -5069,12 +5408,10 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:328",
           "alias": "Percentuale test molecolari positivi",
           "yaxis": 2
         },
         {
-          "$$hashKey": "object:329",
           "alias": "Percentuale test rapidi positivi",
           "yaxis": 2
         }
@@ -5132,7 +5469,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:287",
           "decimals": null,
           "format": "none",
           "label": null,
@@ -5142,7 +5478,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:288",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -5181,7 +5516,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 171
+        "y": 189
       },
       "hiddenSeries": false,
       "id": 65,
@@ -5283,7 +5618,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:346",
           "decimals": 1,
           "format": "percent",
           "label": null,
@@ -5293,7 +5627,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:347",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -5328,7 +5661,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 180
+        "y": 198
       },
       "hiddenSeries": false,
       "id": 25,
@@ -5404,7 +5737,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:542",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -5413,7 +5745,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:543",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -5447,7 +5778,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 180
+        "y": 198
       },
       "hiddenSeries": false,
       "id": 3,
@@ -5474,7 +5805,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:169",
           "alias": "Casi totali",
           "color": "#E0B400"
         }
@@ -5525,7 +5855,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:492",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -5534,7 +5863,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:493",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -5569,7 +5897,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 189
+        "y": 207
       },
       "hiddenSeries": false,
       "id": 75,
@@ -5645,7 +5973,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:994",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -5654,7 +5981,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:995",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -5708,7 +6034,7 @@
         "h": 23,
         "w": 24,
         "x": 0,
-        "y": 198
+        "y": 216
       },
       "hideEmpty": false,
       "hideZero": false,
@@ -5791,7 +6117,7 @@
         "h": 23,
         "w": 24,
         "x": 0,
-        "y": 221
+        "y": 239
       },
       "hideEmpty": false,
       "hideZero": false,
@@ -5863,11 +6189,11 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 244
+        "y": 262
       },
       "id": 35,
       "options": {
-        "content": "# Guida alla consultazione\n\n#### Grafici regionali/nazionali\nLa prima sezione di grafici contiene i grafici regionali. I dati di questi grafici fanno riferimento a province e regioni: selezionando una regione dal menu in alto, questi grafici si aggiorneranno mostrando i dati relativi alla regione selezionata.  \nIl secondo gruppo, invece, presenta grafici con i dati nazionali, non divisi per regioni.\n\n#### Grafici totali/giornalieri\nI grafici in generale si dividono in \"totali\" e \"giornalieri\". Nei grafici \"totali\", per ogni giorno vengono riportati valori aggregati dati dalla somma di tutti i valori giornalieri da inizio epidemia; nei grafici \"giornalieri\", vengono invece riportati i dati raccolti in ogni singolo giorno.  \nPerciò, ad esempio, se in un grafico \"giornaliero\" i primi 3 valori fossero 3, 7 e 18 (il che significa un valore 3 relativo al primo giorno, un valore 7 relativo al secondo giorno e un valore 18 relativo al terzo giorno), un equivalente grafico \"totale\", che volesse esprimere lo stesso dato, dovrebbe riportare il valore 3 nel primo giorno (non essendoci valori precedenti), un valore 10 nel secondo giorno (che è la somma dei valori dei primi due giorni) e un valore 28 nel terzo giorno (che è la somma dei valori dei primi 3 giorni).\n\n#### Consultazione di un grafico \nOgni grafico è corredato di un titolo e una descrizione (visualizzabile passando il puntatore del mouse sulla \"i\" che si vede nell'angolo in alto a sinistra di ogni grafico).  \nSpostando il puntatore del mouse lungo il grafico, si possono visualizzare i valori precisi riportati nel grafico stesso.  \nCliccando su un punto di un grafico e trascinando il mouse, si può fare lo zoom dell'area di grafico di proprio interesse (un particolare periodo, ad esempio): per tornare alla visualizzazione classica si può ricarica la pagina https://covid-italy.marcogasparri.com. Inoltre, in alto a destra, è presente un tool per cambiare l'intervallo temporale preso in esame da tutti i grafici della pagina.  \n\n\n  --  \n    \n*NOTA*: eventuali metriche con la dicitura \"[BETA]\" nel titolo rappresentano metriche sperimentali in corso di valutazione.\n  \n*DISCLAIMER*: i dati originali si basano su quelli forniti dal Dipartimento di Protezione Civile, perciò in caso di errori in quei dati potrebbero esserci errori propagati sulle statistiche.  \nInoltre, le analisi sono frutto di elaborazioni non professionali, che cercano di dare però una visione il più possibile completa della realtà: in caso di obiezioni, vi chiedo gentilmente di contattarmi e inviarmi segnalazioni all'indirizzo mg@marcogasparri.com",
+        "content": "# Guida alla consultazione\n\n#### Grafici regionali/nazionali\nLa prima sezione di grafici contiene i grafici regionali. I dati di questi grafici fanno riferimento a province e regioni: selezionando una regione dal menu in alto, questi grafici si aggiorneranno mostrando i dati relativi alla regione selezionata.  \nIl secondo gruppo, invece, presenta grafici con i dati nazionali, non divisi per regioni.\n\n#### Grafici totali/giornalieri\nI grafici in generale si dividono in \"totali\" e \"giornalieri\". Nei grafici \"totali\", per ogni giorno vengono riportati valori aggregati dati dalla somma di tutti i valori giornalieri da inizio epidemia; nei grafici \"giornalieri\", vengono invece riportati i dati raccolti in ogni singolo giorno.  \nPerciò, ad esempio, se in un grafico \"giornaliero\" i primi 3 valori fossero 3, 7 e 18 (il che significa un valore 3 relativo al primo giorno, un valore 7 relativo al secondo giorno e un valore 18 relativo al terzo giorno), un equivalente grafico \"totale\", che volesse esprimere lo stesso dato, dovrebbe riportare il valore 3 nel primo giorno (non essendoci valori precedenti), un valore 10 nel secondo giorno (che è la somma dei valori dei primi due giorni) e un valore 28 nel terzo giorno (che è la somma dei valori dei primi 3 giorni).\n\n#### Consultazione di un grafico \nOgni grafico è corredato di un titolo e una descrizione (visualizzabile passando il puntatore del mouse sulla \"i\" che si vede nell'angolo in alto a sinistra di ogni grafico).  \nSpostando il puntatore del mouse lungo il grafico, si possono visualizzare i valori precisi riportati nel grafico stesso.  \nCliccando su un punto di un grafico e trascinando il mouse, si può fare lo zoom dell'area di grafico di proprio interesse (un particolare periodo, ad esempio): per tornare alla visualizzazione classica si può ricarica la pagina. Inoltre, in alto a destra, è presente un tool per cambiare l'intervallo temporale preso in esame da tutti i grafici della pagina.  \n\n\n  --  \n    \n*NOTA*: eventuali metriche con la dicitura \"[BETA]\" nel titolo rappresentano metriche sperimentali in corso di valutazione.\n  \n*DISCLAIMER*: i dati originali si basano su quelli forniti dal Dipartimento di Protezione Civile, perciò in caso di errori in quei dati potrebbero esserci errori propagati sulle statistiche.",
         "mode": "markdown"
       },
       "pluginVersion": "7.1.0",
@@ -5917,11 +6243,11 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 258
+        "y": 276
       },
       "id": 49,
       "options": {
-        "content": "# Contatti\n\nPer segnalazioni, proposte di metriche/grafici da aggiungere, o altre comunicazioni, scrivere un'e-mail a: mg@marcogasparri.com         ",
+        "content": "# Contatti\n\n---         ",
         "mode": "markdown"
       },
       "pluginVersion": "7.1.0",
@@ -5971,11 +6297,11 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 261
+        "y": 279
       },
       "id": 85,
       "options": {
-        "content": "<span style=\"text-align:center; margin: 0 auto;\">La policy relativa a privacy e cookie è visualizzabile <a href=\"https://marcogasparri.com/privacy.html\" target=\"blank\">QUI</a></span>",
+        "content": "<span style=\"text-align:center; margin: 0 auto;\">---</span>",
         "mode": "html"
       },
       "pluginVersion": "7.1.0",
@@ -6074,5 +6400,5 @@
   "timezone": "",
   "title": "COVID-19 - Analisi Italia",
   "uid": "mpb6UnuWk",
-  "version": 273
+  "version": 303
 }

@@ -68,19 +68,20 @@ def main():
 
     #import csvs
     print("CSV import from DPC repo...")
-    updateDbFromCsv(repoPath, "/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv", cursor, "nazionale", 0)
-    updateDbFromCsv(repoPath, "/dati-province/dpc-covid19-ita-province.csv", cursor, "province", 0)
-    updateDbFromCsv(repoPath, "/dati-regioni/dpc-covid19-ita-regioni.csv", cursor, "regioni", 0)
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoPath + "/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv' INTO TABLE nazionale FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data,stato,ricoverati_con_sintomi,terapia_intensiva,totale_ospedalizzati,isolamento_domiciliare,totale_positivi,variazione_totale_positivi,nuovi_positivi,dimessi_guariti,deceduti,casi_da_sospetto_diagnostico,casi_da_screening,totale_casi,tamponi,casi_testati,note,ingressi_terapia_intensiva,note_test,note_casi,totale_positivi_test_molecolare,totale_positivi_test_antigenico_rapido,tamponi_test_molecolare,tamponi_test_antigenico_rapido)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoPath + "/dati-regioni/dpc-covid19-ita-regioni.csv' INTO TABLE regioni FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data,stato,codice_regione,denominazione_regione,lat,`long`,ricoverati_con_sintomi,terapia_intensiva,totale_ospedalizzati,isolamento_domiciliare,totale_positivi,variazione_totale_positivi,nuovi_positivi,dimessi_guariti,deceduti,casi_da_sospetto_diagnostico,casi_da_screening,totale_casi,tamponi,casi_testati,note,ingressi_terapia_intensiva,note_test,note_casi,totale_positivi_test_molecolare,totale_positivi_test_antigenico_rapido,tamponi_test_molecolare,tamponi_test_antigenico_rapido,codice_nuts_1,codice_nuts_2)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoPath + "/dati-province/dpc-covid19-ita-province.csv' INTO TABLE province FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data,stato,codice_regione,denominazione_regione,codice_provincia,denominazione_provincia,sigla_provincia,lat,`long`,totale_casi,note,codice_nuts_1,codice_nuts_2,codice_nuts_3)");
     print("CSV imported from DPC repo.")
 
     print("CSV import from vaccines repo...")
     cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/vaccini-summary-latest.csv' INTO TABLE somministrazioni_summary FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (area,dosi_somministrate,dosi_consegnate,percentuale_somministrazione,ultimo_aggiornamento)");
-    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-summary-latest.csv' INTO TABLE somministrazioni FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,area,totale,sesso_maschile,sesso_femminile,prima_dose,seconda_dose)");
-    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-latest.csv' INTO TABLE somministrazioni_fasce FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,fornitore,area,fascia_anagrafica,sesso_maschile,sesso_femminile,prima_dose,seconda_dose)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-summary-latest.csv' INTO TABLE somministrazioni FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,area,totale,sesso_maschile,sesso_femminile,prima_dose,seconda_dose,pregressa_infezione,dose_addizionale_booster,codice_NUTS1,codice_NUTS2,codice_regione_ISTAT,nome_area)");
+    cursor.execute("LOAD DATA LOCAL INFILE '" + repoVaccPath + "/dati/somministrazioni-vaccini-latest.csv' INTO TABLE somministrazioni_fasce FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (data_somministrazione,fornitore,area,fascia_anagrafica,sesso_maschile,sesso_femminile,prima_dose,seconda_dose,pregressa_infezione,dose_addizionale_booster,codice_NUTS1,codice_NUTS2,codice_regione_ISTAT,nome_area)");
     print("CSV imported from vaccines repo.")
 
     print("Executing last tasks...")
     cursor.execute("CALL tempo_raddoppio(1)")
+    cursor.execute("CALL update_immunizzati_regioni()")
     cursor.execute("CALL update_immunizzati()")
     print("Last tasks completed.")
 
