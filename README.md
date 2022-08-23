@@ -29,5 +29,5 @@ Some templates to setup a covid-19 data analysis and visualization environment u
 
 Now you are able to visualize the already developed graphs and you are provided with the data and the infrastructure to perform your own analysis.
 
-Public dashboard: https://www.covid-italy.marcogasparri.com/
+Public dashboard: https://www.covid-italy.marcogasparri.com/ (2022-08-23 update: the site will be dismissed soon. It will be eventually re-activated if required by pandemic conditions)
 	
